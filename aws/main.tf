@@ -48,3 +48,10 @@ provider "docker" {
     password = data.aws_ecr_authorization_token.token.password
   }
 }
+
+module "init" {
+  source = "./packages/init"
+
+  labels = var.labels
+  prefix = var.prefix
+}

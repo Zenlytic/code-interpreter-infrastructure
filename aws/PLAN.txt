@@ -1,1 +1,11 @@
 Reincorporate modules one at a time into `main.tf`, adding to `variables.tf` as needed.
+
+Migration notes:
+- To accommodate different naming conventions in AWS, we require ${var.prefix} to be
+  more versatile. Namely, it should not end with a hyphen, so that we can choose the
+  final separator on a case-by-case basis
+- Instead of using a service account named "${var.prefix}infra-instances", we use an IAM
+  profile named "${var.prefix}-infra-instances-service-profile" with various policies
+  attached to a role named "${var.prefix}-infra-instances-service-role"
+  - In accordance with this change, we output a "service_profile_name" and a
+    "service_role_name"
