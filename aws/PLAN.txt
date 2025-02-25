@@ -1,0 +1,1 @@
+Reincorporate modules one at a time into `main.tf`, adding to `variables.tf` as needed.
