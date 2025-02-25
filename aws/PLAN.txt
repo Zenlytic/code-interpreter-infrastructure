@@ -9,3 +9,6 @@ Migration notes:
   attached to a role named "${var.prefix}-infra-instances-service-role"
   - In accordance with this change, we output a "service_profile_name" and a
     "service_role_name"
+  - One new policy that does not directly map to an old Google IAM role is the
+    "ssm_read_policy". GCP automatically allows instances to access secrets, but AWS
+    does not, so this makes up for the difference
