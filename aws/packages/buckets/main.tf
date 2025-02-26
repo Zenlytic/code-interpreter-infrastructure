@@ -291,19 +291,19 @@ resource "aws_iam_role_policy_attachment" "fc_template_bucket_policy_attachment"
 }
 
 locals {
-  public_builds_bucket_name = "${var.project_name}-public-builds"
+  public_builds_bucket_name = can(regex("prod", var.project_name)) ? "${var.project_name}-public-builds" : null
 }
 
 resource "aws_s3_bucket" "public_builds_storage_bucket" {
   # Only create the bucket if the project name contains "prod"
-  count  = can(regex("prod", var.project_name)) ? 1 : 0
+  count  = local.public_builds_bucket_name != null ? 1 : 0
   bucket = local.public_builds_bucket_name
 
   tags = var.labels
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "public_builds_lifecycle" {
-  count  = can(regex("prod", var.project_name)) ? 1 : 0
+  count  = local.public_builds_bucket_name != null ? 1 : 0
   bucket = aws_s3_bucket.public_builds_storage_bucket[0].id
 
   rule {
@@ -317,7 +317,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "public_builds_lifecycle" {
 }
 
 data "aws_iam_policy_document" "public_builds_bucket_policy" {
-  count = can(regex("prod", var.project_name)) ? 1 : 0
+  count = local.public_builds_bucket_name != null ? 1 : 0
 
   statement {
     actions   = ["s3:GetObject"]
@@ -330,7 +330,7 @@ data "aws_iam_policy_document" "public_builds_bucket_policy" {
 }
 
 resource "aws_s3_bucket_policy" "public_builds_bucket_policy" {
-  count  = can(regex("prod", var.project_name)) ? 1 : 0
+  count  = local.public_builds_bucket_name != null ? 1 : 0
   bucket = aws_s3_bucket.public_builds_storage_bucket[0].id
   policy = data.aws_iam_policy_document.public_builds_bucket_policy[0].json
 }

@@ -8,6 +8,26 @@ variable "aws_region" {
   type = string
 }
 
+variable "github_organization" {
+  type    = string
+  default = "Zenlytic"
+}
+
+variable "github_repository" {
+  type    = string
+  default = "code-interpreter-infrastructure"
+}
+
+variable "github_branch" {
+  type    = string
+  default = "zenlytic"
+}
+
+variable "domain_name" {
+  type        = string
+  description = "The domain name where e2b will run"
+}
+
 variable "prefix" {
   type        = string
   description = "The prefix to use for all resources in this module"
@@ -21,6 +41,18 @@ variable "labels" {
     "app"       = "e2b"
     "terraform" = "true"
   }
+}
+
+variable "terraform_state_bucket" {
+  description = "The name of the bucket to store terraform state in"
+  type        = string
+  default     = "zenlytic-code-interpreter-terraform-state"
+}
+
+variable "terraform_state_dynamodb_table" {
+  description = "The name of the dynamodb table to lock terraform state"
+  type        = string
+  default     = "zenlytic-code-interpreter-terraform-state-lock"
 }
 
 variable "template_bucket_region" {

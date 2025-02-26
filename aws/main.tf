@@ -67,3 +67,22 @@ module "buckets" {
 
   labels = var.labels
 }
+
+module "github_tf" {
+  source = "./github-tf"
+
+  project_name = var.project_name
+
+  github_organization = var.github_organization
+  github_repository   = var.github_repository
+  github_branch       = var.github_branch
+
+  domain_name                    = var.domain_name
+  terraform_state_bucket         = var.terraform_state_bucket
+  terraform_state_dynamodb_table = var.terraform_state_dynamodb_table
+  kernel_bucket                  = module.buckets.fc_kernels_bucket_name
+  fc_versions_bucket             = module.buckets.fc_versions_bucket_name
+  public_builds_bucket           = module.buckets.public_builds_bucket_name
+
+  prefix = var.prefix
+}

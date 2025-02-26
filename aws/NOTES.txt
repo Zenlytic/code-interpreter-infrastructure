@@ -1,5 +1,10 @@
 Plan:
-Reincorporate modules one at a time into `main.tf`, adding to `variables.tf` as needed.
+1. Reincorporate modules one at a time into `main.tf`, adding to `variables.tf` as
+   needed.
+2. Update test, build, and deploy scripts to use the new infrastructure, new variables,
+   etc.
+   - We will need to use E2B_TERRAFORM_STATE_BUCKET and
+     E2B_TERRAFORM_STATE_DYNAMODB_TABLE to configure the terraform backend via the CLI
 
 Migration notes:
 - We use a "project_name" variable instead of a "gcp_project_id". We remove "gcp_zone"
@@ -8,6 +13,7 @@ Migration notes:
 - To accommodate different naming conventions in AWS, we require ${var.prefix} to be
   more versatile. Namely, it should not end with a hyphen, so that we can choose the
   final separator on a case-by-case basis
+- For migrating secrets, we use AWS SSM Parameter Store instead of Google Secret Manager
 
 # init
 - Instead of using a service account named "${var.prefix}infra-instances", we use an IAM
@@ -30,3 +36,16 @@ Migration notes:
 - Instead of checking if on prod with the hardcoded project name "e2b-prod", we just
   check for "prod" anywhere in the project name
 - Output "public_builds_bucket_name" to be used by "github-tf"
+
+# github-tf
+- For GitHub Actions authentication, we replace Google Workload Identity Federation with
+  AWS IAM OIDC provider
+  - Instead of a service account with workload identity user role, we use an IAM role
+    with a trust policy that allows GitHub Actions to assume the role
+  - The GitHub secret "E2B_SERVICE_ACCOUNT_EMAIL" is replaced with
+    "E2B_SERVICE_ROLE_ARN"
+- We add a new variable "terraform_state_dynamodb_table" and expose it as a GitHub
+  secret called E2B_TERRAFORM_STATE_DYNAMODB_TABLE to support AWS's DynamoDB-based state
+  locking mechanism
+- We add a "github_branch" variable to specify which branch to deploy from, making it
+  more flexible than the hardcoded "main" branch
