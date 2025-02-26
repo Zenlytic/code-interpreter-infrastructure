@@ -290,10 +290,14 @@ resource "aws_iam_role_policy_attachment" "fc_template_bucket_policy_attachment"
   provider   = aws.fc_template_bucket_region
 }
 
+locals {
+  public_builds_bucket_name = "${var.project_name}-public-builds"
+}
+
 resource "aws_s3_bucket" "public_builds_storage_bucket" {
   # Only create the bucket if the project name contains "prod"
   count  = can(regex("prod", var.project_name)) ? 1 : 0
-  bucket = "${var.project_name}-public-builds"
+  bucket = local.public_builds_bucket_name
 
   tags = var.labels
 }

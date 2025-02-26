@@ -22,3 +22,8 @@ output "fc_versions_bucket_name" {
 output "fc_template_bucket_name" {
   value = aws_s3_bucket.fc_template_bucket.id
 }
+
+output "public_builds_bucket_name" {
+  description = "The name of the public builds bucket"
+  value       = local.public_builds_bucket_name
+}

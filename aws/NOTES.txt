@@ -29,3 +29,4 @@ Migration notes:
   service role in another region
 - Instead of checking if on prod with the hardcoded project name "e2b-prod", we just
   check for "prod" anywhere in the project name
+- Output "public_builds_bucket_name" to be used by "github-tf"
