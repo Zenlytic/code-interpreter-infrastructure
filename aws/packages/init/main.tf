@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "ec2_assume_role_policy_doc" {
+data "aws_iam_policy_document" "ec2_assume_role_policy" {
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "ec2_assume_role_policy_doc" {
 
 resource "aws_iam_role" "infra_instances_service_role" {
   name               = "${var.prefix}-infra-instances-service-role"
-  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role_policy_doc.json
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role_policy.json
 }
 
 resource "aws_iam_instance_profile" "infra_instances_service_profile" {
@@ -78,7 +78,7 @@ resource "aws_ssm_parameter" "analytics_collector_api_token" {
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_policy_document" "ssm_read_policy_doc" {
+data "aws_iam_policy_document" "ssm_read_policy" {
   statement {
     effect = "Allow"
     actions = [
@@ -95,7 +95,7 @@ resource "aws_iam_policy" "ssm_read_policy" {
   name        = "${var.prefix}-ssm-read-policy"
   description = "Allow reading from SSM Parameter Store"
 
-  policy = data.aws_iam_policy_document.ssm_read_policy_doc.json
+  policy = data.aws_iam_policy_document.ssm_read_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_read_attachment" {
@@ -109,7 +109,7 @@ resource "aws_ecr_repository" "orchestration_repository" {
   tags = var.labels
 }
 
-data "aws_iam_policy_document" "ecr_pull_policy_doc" {
+data "aws_iam_policy_document" "ecr_pull_policy" {
   statement {
     effect = "Allow"
     actions = [
@@ -137,7 +137,7 @@ resource "aws_iam_policy" "ecr_pull_policy" {
   name        = "${var.prefix}-ecr-pull-policy"
   description = "Allow pulling from ECR repositories"
 
-  policy = data.aws_iam_policy_document.ecr_pull_policy_doc.json
+  policy = data.aws_iam_policy_document.ecr_pull_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "ecr_pull_attachment" {

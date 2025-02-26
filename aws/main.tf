@@ -55,3 +55,15 @@ module "init" {
   labels = var.labels
   prefix = var.prefix
 }
+
+module "buckets" {
+  source = "./packages/buckets"
+
+  project_name      = var.project_name
+  service_role_name = module.init.service_role_name
+
+  fc_template_bucket_name   = length(var.template_bucket_name) > 0 ? var.template_bucket_name : "${var.project_name}-fc-templates"
+  fc_template_bucket_region = var.template_bucket_region
+
+  labels = var.labels
+}

@@ -1,9 +1,15 @@
+Plan:
 Reincorporate modules one at a time into `main.tf`, adding to `variables.tf` as needed.
 
 Migration notes:
+- We use a "project_name" variable instead of a "gcp_project_id". We remove "gcp_zone"
+  and use "aws_region" instead of "gcp_region"
+- "template_bucket_location" -> "template_bucket_region"
 - To accommodate different naming conventions in AWS, we require ${var.prefix} to be
   more versatile. Namely, it should not end with a hyphen, so that we can choose the
   final separator on a case-by-case basis
+
+# init
 - Instead of using a service account named "${var.prefix}infra-instances", we use an IAM
   profile named "${var.prefix}-infra-instances-service-profile" with various policies
   attached to a role named "${var.prefix}-infra-instances-service-role"
@@ -12,3 +18,14 @@ Migration notes:
   - One new policy that does not directly map to an old Google IAM role is the
     "ssm_read_policy". GCP automatically allows instances to access secrets, but AWS
     does not, so this makes up for the difference
+
+# buckets
+- We remove "envs_docker_context" since it is "not needed anymore", and there are
+  obviously no existing AWS deployments that we need to be backward compatible with
+- Note that intelligent tiering is AWS' equivalent of autoclass
+- Potentially fixed a bug where "fc_template_bucket_region" is not used for the
+  "fc_template_bucket" itself. This variable is still suspicious, because I don't know
+  what happens if, e.g., policies are created in one region but try to attach to the
+  service role in another region
+- Instead of checking if on prod with the hardcoded project name "e2b-prod", we just
+  check for "prod" anywhere in the project name
