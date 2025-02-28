@@ -1,3 +1,7 @@
+![Status: Discontinued](https://img.shields.io/badge/Status-Discontinued-red)
+
+> **⚠️ DISCONTINUED: This fork is no longer being maintained.**
+
 # A Note From Zenlytic
 
 Thanks to the E2B team for their hard work on this project. Our primary goal in forking [e2b-dev/infra](https://github.com/e2b-dev/infra) is to adapt it to our own hosting requirements, namely by enabling deployment on AWS. We release our derived work under the Apache 2.0 license.
